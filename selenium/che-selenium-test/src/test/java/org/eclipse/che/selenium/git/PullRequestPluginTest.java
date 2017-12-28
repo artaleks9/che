@@ -212,6 +212,7 @@ public class PullRequestPluginTest {
   @Test(priority = 3)
   public void checkFactoryOnGitHub() {
     String currentWindow = seleniumWebDriver.getWindowHandle();
+    pullRequestPanel.waitOpenPanel();
     pullRequestPanel.openPullRequestOnGitHub();
     seleniumWebDriver.switchToNoneCurrentWindow(currentWindow);
     checkGitHubUserPage();
