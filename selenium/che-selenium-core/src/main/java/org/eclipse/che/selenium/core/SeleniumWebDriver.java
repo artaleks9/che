@@ -16,16 +16,22 @@ import static org.eclipse.che.selenium.core.utils.WaitUtils.sleepQuietly;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import javax.inject.Named;
 import org.eclipse.che.commons.annotation.Nullable;
+import org.eclipse.che.commons.lang.NameGenerator;
 import org.eclipse.che.selenium.core.constant.TestBrowser;
+import org.eclipse.che.selenium.core.utils.WaitUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -63,6 +69,10 @@ public class SeleniumWebDriver
   private String webDriverVersion;
 
   private final RemoteWebDriver driver;
+
+  @Inject
+  @com.google.inject.name.Named("tests.screenshot_dir")
+  private String screenshotDir;
 
   @Inject
   public SeleniumWebDriver(
@@ -302,6 +312,7 @@ public class SeleniumWebDriver
     for (String handle : getWindowHandles()) {
       if (!currentWindowHandler.equals(handle)) {
         switchTo().window(handle);
+        captureScreenshotsFromOpenedWindows(this);
         break;
       }
     }
@@ -319,5 +330,28 @@ public class SeleniumWebDriver
 
   public WebDriverWait wait(int timeOutInSeconds) {
     return new WebDriverWait(this, timeOutInSeconds);
+  }
+
+  private void captureScreenshotFromWindow(SeleniumWebDriver webDriver) {
+    String testName = NameGenerator.generate("PullRequestPluginTest", 4);
+    String filename = NameGenerator.generate(testName + "_", 8) + ".png";
+    try {
+      byte[] data = webDriver.getScreenshotAs(OutputType.BYTES);
+      Path screenshot = Paths.get(screenshotDir, filename);
+      Files.createDirectories(screenshot.getParent());
+      Files.copy(new ByteArrayInputStream(data), screenshot);
+    } catch (WebDriverException | IOException e) {
+      LOG.error(format("Can't capture screenshot for test %s", testName), e);
+    }
+  }
+
+  private void captureScreenshotsFromOpenedWindows(SeleniumWebDriver webDriver) {
+    webDriver
+        .getWindowHandles()
+        .forEach(
+            currentWin -> {
+              webDriver.switchTo().window(currentWin);
+              captureScreenshotFromWindow(webDriver);
+            });
   }
 }
