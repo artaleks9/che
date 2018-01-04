@@ -263,7 +263,7 @@ export class WorkspaceDetailsController {
         const statusStr = this.getWorkspaceStatus();
         this.showApplyMessage = [STOPPED, STOPPING].indexOf(statusStr) === -1;
       }
-    });
+    }, 500);
   }
 
   /**
