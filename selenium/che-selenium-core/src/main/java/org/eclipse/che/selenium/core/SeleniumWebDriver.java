@@ -309,6 +309,16 @@ public class SeleniumWebDriver
    */
   public void switchToNoneCurrentWindow(String currentWindowHandler) {
     waitOpenedSomeWin();
+    for (String handle : getWindowHandles()) {
+      if (!currentWindowHandler.equals(handle)) {
+        switchTo().window(handle);
+        break;
+      }
+    }
+  }
+
+  public void switchToAnotherWindow(String currentWindowHandler) {
+    waitOpenedSomeWin();
     WaitUtils.sleepQuietly(10);
     captureScreenshotsFromOpenedWindows(this);
     for (String handle : getWindowHandles()) {

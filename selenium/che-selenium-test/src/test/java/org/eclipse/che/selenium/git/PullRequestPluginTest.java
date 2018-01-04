@@ -214,7 +214,7 @@ public class PullRequestPluginTest {
     String currentWindow = seleniumWebDriver.getWindowHandle();
     pullRequestPanel.waitOpenPanel();
     pullRequestPanel.openPullRequestOnGitHub();
-    seleniumWebDriver.switchToNoneCurrentWindow(currentWindow);
+    seleniumWebDriver.switchToAnotherWindow(currentWindow);
     checkGitHubUserPage();
     consumeFactoryOnGitHub();
     seleniumWebDriver.switchFromDashboardIframeToIde();
