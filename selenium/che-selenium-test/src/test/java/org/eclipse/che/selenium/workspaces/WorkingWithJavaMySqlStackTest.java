@@ -109,6 +109,7 @@ public class WorkingWithJavaMySqlStackTest {
     projectExplorer.selectItem(PROJECT_NAME);
 
     // Select the db machine and perform 'show databases'
+    loader.waitOnClosed();
     projectExplorer.invokeCommandWithContextMenu(COMMON, PROJECT_NAME, "show databases", "db");
     consoles.waitTabNameProcessIsPresent("show databases");
     for (String text : infoDataBases) {
