@@ -137,8 +137,6 @@ export class CheEditorController {
     };
   }
 
-
-
   /**
    * Returns validation state of the editor content.
    * @returns {boolean}

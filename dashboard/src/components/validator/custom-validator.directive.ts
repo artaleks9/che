@@ -37,7 +37,7 @@ export class CustomValidator implements ng.IDirective {
       return;
     }
 
-    const $testScope = 'input' === elementLocalName && $scope.$parent ? $scope.$parent : $scope;
+    const $testScope = $scope.$parent ? $scope.$parent : $scope;
 
     ctrl.$validators.customValidator = (modelValue: any) => {
       return $testScope.$eval(attrs.customValidator, {$value: modelValue});
