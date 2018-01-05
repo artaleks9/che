@@ -27,6 +27,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Named;
 import org.eclipse.che.commons.annotation.Nullable;
 import org.eclipse.che.commons.lang.NameGenerator;
@@ -319,8 +320,12 @@ public class SeleniumWebDriver
 
   public void switchToAnotherWindow(String currentWindowHandler) {
     waitOpenedSomeWin();
-    WaitUtils.sleepQuietly(3);
-    captureScreenshotsFromOpenedWindows(this);
+
+    for (int i = 0; i < 4; i++) {
+      captureScreenshotsFromOpenedWindows(this);
+      WaitUtils.sleepQuietly(500, TimeUnit.MILLISECONDS);
+    }
+
     for (String handle : getWindowHandles()) {
       if (!currentWindowHandler.equals(handle)) {
         switchTo().window(handle);
